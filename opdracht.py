@@ -23,10 +23,7 @@ from utils.check_pincode import check_pincode
 csv_headers = ["id", "keycode"]
 
 # the amount of lockers that are allowed to exist
-max_lockers = 12
-
-
-
+max_lockers = 13
 
 
 def aantal_kluizen_vrij():
@@ -39,29 +36,30 @@ def aantal_kluizen_vrij():
         int: Het aantal vrije kluizen.
     """
     csv = pd.read_csv("./fa_testkluizen.txt", names=csv_headers, sep=";")
+    print(csv)
 
     # get the id's of lockers that are in use and convert that to an array
     lockers = (csv.loc[:, "id"]).to_numpy()
 
     # find the lockers that arent used
-    unused_lockers = find_missing_int(lockers, max_lockers)    
+    unused_lockers = find_missing_int(lockers, max_lockers)
 
     amount_unused_lockers = len(unused_lockers)
+    print("unused lockers",amount_unused_lockers)
 
-    return amount_unused_lockers
+    return (amount_unused_lockers )
 
 
 def nieuwe_kluis():
-    # check if there are unused lockers 
+    # check if there are unused lockers
     if aantal_kluizen_vrij() != 0:
         print("no free lockers")
         return -2
-    
+
     pincode = prompt.query("locker code?: ")
-    
+
     if check_pincode(pincode):
         return
-
 
     """
     Indien er nog kluizen vrij zijn, moet de gebruiker de mogelijkheid krijgen

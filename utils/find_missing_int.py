@@ -1,6 +1,5 @@
 def find_missing_int(arr, size):
-    """
-    finds the missing intergers whithin an array
+    """finds the missing intergers whithin an array
 
     Args: 
         arr (array): the array where the missing intergers should be found
@@ -9,7 +8,7 @@ def find_missing_int(arr, size):
     missing = []
 
     for item in range(size):
-        if item not in arr:
+        if item + 1 not in arr:
             missing.append(item)
     return missing
 
