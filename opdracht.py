@@ -23,7 +23,7 @@ from utils.check_pincode import check_pincode
 csv_headers = ["id", "keycode"]
 
 # the amount of lockers that are allowed to exist
-max_lockers = 13
+max_lockers = 12
 
 
 def aantal_kluizen_vrij():
@@ -42,9 +42,10 @@ def aantal_kluizen_vrij():
     lockers = (csv.loc[:, "id"]).to_numpy()
 
     # find the lockers that arent used
+    print((csv.loc[:, "id"]).to_numpy())
     unused_lockers = find_missing_int(lockers, max_lockers)
 
-    amount_unused_lockers = len(unused_lockers)
+    amount_unused_lockers = (len(unused_lockers))
     print("unused lockers",amount_unused_lockers)
 
     return (amount_unused_lockers )
