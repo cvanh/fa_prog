@@ -100,7 +100,15 @@ def kluis_openen():
     Returns:
         bool: True als de ingevoerde combinatie correct is, anders False
     """
-    return
+    locker_id = int(prompt.query("locker id?"))
+    locker_keycode = (prompt.query("locker keycode"))
+
+    csv = read_csv()
+
+    # find locker with the locker id and password 
+    locker = csv.loc[(csv["id"] == locker_id) & (csv["keycode"] == locker_keycode)]
+
+    return locker.empty
 
 
 def kluis_teruggeven():
@@ -123,7 +131,7 @@ def development_code():
     # Breid deze code uit om het keuzemenu te realiseren:
     inst_options = [{'selector': '1', 'prompt': 'Ik wil weten hoeveel kluizen nog vrij zijn ', 'return': 1},
                     {'selector': '2', 'prompt': 'Ik wil een nieuwe kluis', 'return': 2},
-                    {'selector': '3', 'prompt': 'Ik wil een nieuwe kluis', 'return': 3},
+                    {'selector': '3', 'prompt': 'Ik wil een kluis openen', 'return': 3},
                     {'selector': '4', 'prompt': 'Ik geef mijn kluis terug', 'return': 4}]
     inst = prompt.options("selecteer optie:", inst_options)
 
@@ -143,7 +151,7 @@ def development_code():
 
 def module_runner():
     development_code()  # Comment deze regel om je 'development_code' uit te schakelen
-    __run_tests()       # Comment deze regel om de HU-tests uit te schakelen
+    # __run_tests()       # Comment deze regel om de HU-tests uit te schakelen
 
 
 """
