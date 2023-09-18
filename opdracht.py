@@ -124,7 +124,22 @@ def kluis_teruggeven():
     Returns:
         bool: True als er een kluiscombinatie verwijderd werd, anders False
     """
-    return
+    locker_id = int(prompt.query("locker id?"))
+    locker_keycode = (prompt.query("locker keycode"))
+
+    csv = read_csv()
+    print(csv)
+
+    # TODO use df.drop 
+    # search trough the dataframe and keep all the items that dont match
+    new_csv = csv.loc[(csv["id"] != locker_id) & (csv["keycode"] != locker_keycode)]
+
+    write_csv(new_csv)
+
+    # if the indexes arent equal that means that there was an item removed
+    item_removed = len(new_csv.index) != len(csv.index)
+
+    return item_removed 
 
 
 def development_code():
