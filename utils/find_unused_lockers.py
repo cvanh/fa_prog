@@ -1,10 +1,17 @@
-def find_unused_lockers(used_lockers, size):
+from utils.csv import read_csv 
+
+def find_unused_lockers(size = 12):
     """finds the missing intergers whithin an array
 
     Args: 
         arr (array): the array where the missing intergers should be found
         size: (int): the biggest interger that should exist 
     """
+    csv = read_csv() 
+
+    # get the id's of lockers that are in use and convert that to an array
+    used_lockers = (csv.loc[:, "id"]).to_numpy()
+    
     used_lockers.sort()
 
     unused = []

@@ -35,13 +35,10 @@ def aantal_kluizen_vrij():
         int: Het aantal vrije kluizen.
     """
     # csv = pd.read_csv("./fa_testkluizen.txt", names=csv_headers, sep=";")
-    csv = read_csv() 
 
-    # get the id's of lockers that are in use and convert that to an array
-    lockers = (csv.loc[:, "id"]).to_numpy()
 
     # find the lockers that arent used
-    unused_lockers = find_unused_lockers(lockers, max_lockers)
+    unused_lockers = find_unused_lockers()
 
     print(f"aantal_kluizen_vrij(): free lockers {unused_lockers}")
 
@@ -68,22 +65,30 @@ def nieuwe_kluis():
     Returns:
         int: het toegekende kluisnummer of foutcode -1 of -2
     """
+    free_lockers = find_unused_lockers() 
+
     # check if there are unused lockers
-    if aantal_kluizen_vrij() == 0:
+    if free_lockers== 0:
         print("no free lockers")
         return -2
 
     pincode = prompt.query("locker code?: ",validators=[check_pincode()])
 
-    # csv = pd.read_csv("./fa_testkluizen.txt", names=csv_headers, sep=";")
     csv = read_csv()
-    
-    csv.append()
-    # csv.to_csv("./fa_testkluizen.txt", names=csv_headers, sep=";")
+
+   # create new locker entry 
+    new_locker = pd.DataFrame({
+        # take the first free locker and use that one
+        "id": [free_lockers[0]],
+        "keycode": [pincode]
+    })
+
+    # add the locker to the existing lockers
+    csv = pd.concat([new_locker,csv])
+
     write_csv(csv)
 
-
-    return
+    return free_lockers[0]
 
 
 def kluis_openen():
