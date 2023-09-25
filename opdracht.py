@@ -72,7 +72,8 @@ def nieuwe_kluis():
         print("no free lockers")
         return -2
 
-    pincode = prompt.query("locker code?: ",validators=[check_pincode()])
+    # pincode = prompt.query("locker code?: ",validators=[check_pincode()])
+    pincode = read("locker code?: ")
 
     csv = read_csv()
 
@@ -166,7 +167,7 @@ def development_code():
 
 def module_runner():
     development_code()  # Comment deze regel om je 'development_code' uit te schakelen
-    # __run_tests()       # Comment deze regel om de HU-tests uit te schakelen
+    __run_tests()       # Comment deze regel om de HU-tests uit te schakelen
 
 
 """
