@@ -73,7 +73,7 @@ def nieuwe_kluis():
         return -2
 
     # pincode = prompt.query("locker code?: ",validators=[check_pincode()])
-    pincode = read("locker code?: ")
+    pincode = input("locker code?: ")
 
     csv = read_csv()
 
@@ -101,8 +101,8 @@ def kluis_openen():
     Returns:
         bool: True als de ingevoerde combinatie correct is, anders False
     """
-    locker_id = int(prompt.query("locker id?"))
-    locker_keycode = (prompt.query("locker keycode"))
+    locker_id = int(input("locker id?"))
+    locker_keycode = input("locker keycode")
 
     csv = read_csv()
 
@@ -125,8 +125,8 @@ def kluis_teruggeven():
     Returns:
         bool: True als er een kluiscombinatie verwijderd werd, anders False
     """
-    locker_id = int(prompt.query("locker id?"))
-    locker_keycode = (prompt.query("locker keycode"))
+    locker_id = int(input("locker id?"))
+    locker_keycode = (input("locker keycode"))
 
     csv = read_csv()
     print(csv)
@@ -145,11 +145,20 @@ def kluis_teruggeven():
 
 def development_code():
     # Breid deze code uit om het keuzemenu te realiseren:
-    inst_options = [{'selector': '1', 'prompt': 'Ik wil weten hoeveel kluizen nog vrij zijn ', 'return': 1},
-                    {'selector': '2', 'prompt': 'Ik wil een nieuwe kluis', 'return': 2},
-                    {'selector': '3', 'prompt': 'Ik wil een kluis openen', 'return': 3},
-                    {'selector': '4', 'prompt': 'Ik geef mijn kluis terug', 'return': 4}]
-    inst = prompt.options("selecteer optie:", inst_options)
+    # inst_options = [{'selector': '1', 'prompt': 'Ik wil weten hoeveel kluizen nog vrij zijn ', 'return': 1},
+    #                 {'selector': '2', 'prompt': 'Ik wil een nieuwe kluis', 'return': 2},
+    #                 {'selector': '3', 'prompt': 'Ik wil een kluis openen', 'return': 3},
+    #                 {'selector': '4', 'prompt': 'Ik geef mijn kluis terug', 'return': 4}]
+    # inst = prompt.options("selecteer optie:", inst_options)
+    prompt = """
+    select something you want to do and type its number and press enter
+
+    1 Ik wil weten hoeveel kluizen nog vrij zijn
+    2 Ik wil een nieuwe kluis
+    3 Ik wil een kluis openen
+    4 Ik geef mijn kluis terug 
+    """
+    inst = int(input(prompt))
 
     match inst:
         case 1:
