@@ -10,7 +10,8 @@ def find_unused_lockers(size = 12):
     csv = read_csv() 
 
     # get the id's of lockers that are in use and convert that to an array
-    used_lockers = (csv.loc[:, "id"]).to_numpy()
+    # used_lockers = (csv.loc[:, "index"]).to_numpy()
+    used_lockers = list(csv.index.values)
     
     used_lockers.sort()
 

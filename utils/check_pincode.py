@@ -1,5 +1,3 @@
-from clint.textui import validators
-
 # this function is bases on the implemtation in : https://github.com/kennethreitz-archive/clint/blob/master/clint/textui/validators.py#L58
 # this is an helper to verify that the pincode that is entered is 4 charachters long
 class check_pincode(object):

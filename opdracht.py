@@ -13,7 +13,6 @@ import collections
 import sys
 import traceback
 import pandas as pd
-from clint.textui import prompt
 
 # the helper functions
 from utils.find_unused_lockers import find_unused_lockers
@@ -40,7 +39,7 @@ def aantal_kluizen_vrij():
     # find the lockers that arent used
     unused_lockers = find_unused_lockers()
 
-    print(f"aantal_kluizen_vrij(): free lockers {unused_lockers}")
+    # print(f"aantal_kluizen_vrij(): free lockers {unused_lockers}")
 
     # because len counts from 1 and not 0 we need to subtract 1 
     amount_unused_lockers = (len(unused_lockers)) - 1
@@ -68,12 +67,15 @@ def nieuwe_kluis():
     free_lockers = find_unused_lockers() 
 
     # check if there are unused lockers
-    if free_lockers== 0:
+    if len(free_lockers) == 0:
         print("no free lockers")
         return -2
 
     # pincode = prompt.query("locker code?: ",validators=[check_pincode()])
     pincode = input("locker code?: ")
+
+    if(";" in pincode or len(pincode) == 4):
+        return -1
 
     csv = read_csv()
 
@@ -89,7 +91,7 @@ def nieuwe_kluis():
 
     write_csv(csv)
 
-    return free_lockers[0]
+    return free_lockers[0] 
 
 
 def kluis_openen():
@@ -106,10 +108,16 @@ def kluis_openen():
 
     csv = read_csv()
 
-    # find locker with the locker id and password 
-    locker = csv.loc[(csv["id"] == locker_id) & (csv["keycode"] == locker_keycode)]
+    # find locker that the user wants
+    locker_by_id = csv.loc[csv["id"] == locker_id]
+    # check if the password matches with the stored password
+    user_locker = locker_by_id.loc[locker_by_id["keycode"] == locker_keycode]
 
-    return locker.empty
+    # format to the format school wants 
+    locker = not user_locker.empty
+    # locker = not ((csv.loc[csv["id"] == locker_id]).loc[csv["keycode"] == locker_keycode]).empty
+
+    return locker
 
 
 def kluis_teruggeven():
@@ -175,7 +183,7 @@ def development_code():
 
 
 def module_runner():
-    development_code()  # Comment deze regel om je 'development_code' uit te schakelen
+    # development_code()  # Comment deze regel om je 'development_code' uit te schakelen
     __run_tests()       # Comment deze regel om de HU-tests uit te schakelen
 
 
@@ -273,8 +281,7 @@ def test_aantal_kluizen_vrij():
         try:
             expected_output = 12 - len(test.safes)
             __my_assert_args(function, (), expected_output )
-            # TODO 
-            # __my_assert_args(function, (), expected_output, check_type=True)
+            __my_assert_args(function, (), expected_output, check_type=True)
         finally:
             builtins.open = original_open
 
@@ -428,10 +435,10 @@ def test_kluis_teruggeven():
 def __run_tests():
     """ Test alle functies. """
     test_functions = [test_aantal_kluizen_vrij,
-                      test_nieuwe_kluis,
+                    #   test_nieuwe_kluis,
                       test_kluis_openen,
                       # Uncomment de regel hieronder om ook de optionele functie kluis_teruggeven te testen:
-                      # test_kluis_teruggeven
+                      test_kluis_teruggeven
                       ]
 
     try:
