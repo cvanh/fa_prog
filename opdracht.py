@@ -79,6 +79,10 @@ def nieuwe_kluis():
 
     csv = read_csv()
 
+     # locker 12 is the only free locker that means all 12 lockers are used
+    if len(csv) == 12:
+        return -2
+
    # create new locker entry 
     new_locker = pd.DataFrame({
         # take the first free locker and use that one
@@ -90,6 +94,10 @@ def nieuwe_kluis():
     csv = pd.concat([new_locker,csv])
 
     write_csv(csv)
+
+    # locker 12 is the only free locker that means all 12 lockers are used
+    if free_lockers == 12:
+        return [-2]
 
     return free_lockers[0] 
 
@@ -115,7 +123,6 @@ def kluis_openen():
 
     # format to the format school wants 
     locker = not user_locker.empty
-    # locker = not ((csv.loc[csv["id"] == locker_id]).loc[csv["keycode"] == locker_keycode]).empty
 
     return locker
 
@@ -137,18 +144,26 @@ def kluis_teruggeven():
     locker_keycode = (input("locker keycode"))
 
     csv = read_csv()
-    print(csv)
 
-    # TODO use df.drop 
-    # search trough the dataframe and keep all the items that dont match
-    new_csv = csv.loc[(csv["id"] != locker_id) & (csv["keycode"] != locker_keycode)]
+    if len(csv) == 0:
+        return False
 
-    write_csv(new_csv)
+    # check if user is allowed to remove the row and the row exists
+    row_exists =  not csv.query("@locker_id == id").query("@locker_keycode == keycode").empty 
 
-    # if the indexes arent equal that means that there was an item removed
-    item_removed = len(new_csv.index) != len(csv.index)
+    # TODO: remove me and fix me
+    kaas =  csv.query("@locker_id == id")
+    gieter = kaas.query("@locker_keycode == keycode")
 
-    return item_removed 
+    # row_exists = bool(((csv.id == locker_id ) & (csv.keycode == locker_keycode)).any())
+    # kaas = ((csv.id == locker_id ) & (csv.keycode == locker_keycode))
+
+    if row_exists:
+        # drop axis 1/row by id
+        csv = csv[~csv["id"].isin([locker_id])]
+        write_csv(csv)
+
+    return row_exists
 
 
 def development_code():
@@ -435,7 +450,7 @@ def test_kluis_teruggeven():
 def __run_tests():
     """ Test alle functies. """
     test_functions = [test_aantal_kluizen_vrij,
-                    #   test_nieuwe_kluis,
+                      test_nieuwe_kluis,
                       test_kluis_openen,
                       # Uncomment de regel hieronder om ook de optionele functie kluis_teruggeven te testen:
                       test_kluis_teruggeven

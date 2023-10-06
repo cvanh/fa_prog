@@ -184,3 +184,5 @@ pip-selfcheck.json
 
 fa_testkluizen.txt
 .vscode
+
+*.zip
