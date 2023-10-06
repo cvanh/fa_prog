@@ -71,7 +71,6 @@ def nieuwe_kluis():
         print("no free lockers")
         return -2
 
-    # pincode = prompt.query("locker code?: ",validators=[check_pincode()])
     pincode = input("locker code?: ")
 
     if(";" in pincode or len(pincode) == 4):
@@ -97,7 +96,7 @@ def nieuwe_kluis():
 
     # locker 12 is the only free locker that means all 12 lockers are used
     if free_lockers == 12:
-        return [-2]
+        return -2
 
     return free_lockers[0] 
 

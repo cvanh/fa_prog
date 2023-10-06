@@ -18,6 +18,10 @@ def find_unused_lockers(size = 12):
     unused = []
 
     for item in range(size + 1) :
+        # we want to skip 0 because we want locker 1-12
+        if item == 0:
+            continue
+
         if item not in used_lockers:
             unused.append(item)
     return unused
