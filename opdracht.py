@@ -16,13 +16,53 @@ import traceback
 import pandas as pd
 
 # the helper functions
-from utils.find_unused_lockers import find_unused_lockers
-from utils.check_pincode import check_pincode
-from utils.csv import read_csv , write_csv
+# from utils.find_unused_lockers import find_unused_lockers
+# from utils.check_pincode import check_pincode
+# from utils.csv import read_csv , write_csv
 
 
 # the amount of lockers that are allowed to exist
 max_lockers = 12
+
+csv_headers =  ["id", "keycode"]
+
+def read_csv() -> pd.DataFrame:
+    csv = pd.read_csv("./fa_testkluizen.txt", names=csv_headers, sep=";") 
+
+    # TODO:here lies the issue, we need to use the id as the index
+    # csv.set_index('id',inplace=True)
+    return csv
+
+def write_csv(csv: pd.DataFrame) -> None:
+    # csv.reset_index().set_index('id')
+    csv.to_csv("./fa_testkluizen.txt", sep=";",index=False,header=False)
+
+
+def find_unused_lockers(size = 12):
+    """finds the missing intergers whithin an array
+
+    Args: 
+        arr (array): the array where the missing intergers should be found
+        size: (int): the biggest interger that should exist 
+    """
+    csv = read_csv() 
+
+    # get the id's of lockers that are in use and convert that to an array
+    # used_lockers = (csv.loc[:, "index"]).to_numpy()
+    used_lockers = list(csv.index.values)
+    
+    used_lockers.sort()
+
+    unused = []
+
+    for item in range(size + 1) :
+        # we want to skip 0 because we want locker 1-12
+        if item == 0:
+            continue
+
+        if item not in used_lockers:
+            unused.append(item)
+    return unused
 
 
 def aantal_kluizen_vrij():
@@ -39,8 +79,6 @@ def aantal_kluizen_vrij():
 
     # find the lockers that arent used
     unused_lockers = find_unused_lockers()
-
-    # print(f"aantal_kluizen_vrij(): free lockers {unused_lockers}")
 
     # because len counts from 1 and not 0 we need to subtract 1 
     amount_unused_lockers = (len(unused_lockers)) - 1
@@ -69,7 +107,6 @@ def nieuwe_kluis():
 
     # check if there are unused lockers
     if len(free_lockers) == 0:
-        print("no free lockers")
         return -2
 
     pincode = input("locker code?: ")
