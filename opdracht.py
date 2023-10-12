@@ -24,21 +24,20 @@ import pandas as pd
 # the amount of lockers that are allowed to exist
 max_lockers = 12
 
-csv_headers =  ["id", "keycode"]
-
 def read_csv() -> pd.DataFrame:
+    csv_headers =  ["id", "keycode"]
     csv = pd.read_csv("./fa_testkluizen.txt", names=csv_headers, sep=";") 
+    
+    # soms is keycode aleen maar een getal en pandas zet dit dan automatish om in een int maar we willen een string voor de comperisons 
+    csv["keycode"] =  csv["keycode"].astype(str)
 
-    # TODO:here lies the issue, we need to use the id as the index
-    # csv.set_index('id',inplace=True)
     return csv
 
 def write_csv(csv: pd.DataFrame) -> None:
-    # csv.reset_index().set_index('id')
     csv.to_csv("./fa_testkluizen.txt", sep=";",index=False,header=False)
 
 
-def find_unused_lockers(size = 12):
+def find_unused_lockers(max_lockers = 12):
     """finds the missing intergers whithin an array
 
     Args: 
@@ -47,15 +46,13 @@ def find_unused_lockers(size = 12):
     """
     csv = read_csv() 
 
-    # get the id's of lockers that are in use and convert that to an array
-    # used_lockers = (csv.loc[:, "index"]).to_numpy()
-    used_lockers = list(csv.index.values)
+    used_lockers = csv["id"].to_numpy()
     
     used_lockers.sort()
 
     unused = []
 
-    for item in range(size + 1) :
+    for item in range(max_lockers + 1) :
         # we want to skip 0 because we want locker 1-12
         if item == 0:
             continue
@@ -74,14 +71,12 @@ def aantal_kluizen_vrij():
     Returns:
         int: Het aantal vrije kluizen.
     """
-    # csv = pd.read_csv("./fa_testkluizen.txt", names=csv_headers, sep=";")
-
 
     # find the lockers that arent used
     unused_lockers = find_unused_lockers()
 
     # because len counts from 1 and not 0 we need to subtract 1 
-    amount_unused_lockers = (len(unused_lockers)) - 1
+    amount_unused_lockers = (len(unused_lockers))
 
     return int(amount_unused_lockers)
 
@@ -111,19 +106,20 @@ def nieuwe_kluis():
 
     pincode = input("locker code?: ")
 
-    if(";" in pincode or len(pincode) == 4):
+    # validate if ; is in the pincode or the pincode is shorter than 4
+    if(";" in pincode or len(pincode) < 4):
         return -1
 
     csv = read_csv()
 
-     # locker 12 is the only free locker that means all 12 lockers are used
+     # check if there is space left for new lockers 
     if len(csv) == 12:
         return -2
 
    # create new locker entry 
     new_locker = pd.DataFrame({
         # take the first free locker and use that one
-        "id": [free_lockers[0]],
+        "id": [free_lockers[-0]],
         "keycode": [pincode]
     })
 
@@ -132,11 +128,7 @@ def nieuwe_kluis():
 
     write_csv(csv)
 
-    # locker 12 is the only free locker that means all 12 lockers are used
-    if free_lockers == 12:
-        return -2
-
-    return free_lockers[0] 
+    return free_lockers[-0] 
 
 
 def kluis_openen():
@@ -178,7 +170,7 @@ def kluis_teruggeven():
         bool: True als er een kluiscombinatie verwijderd werd, anders False
     """
     locker_id = int(input("locker id?"))
-    locker_keycode = (input("locker keycode"))
+    locker_keycode = input("locker keycode")
 
     csv = read_csv()
 
@@ -186,18 +178,17 @@ def kluis_teruggeven():
         return False
 
     # check if user is allowed to remove the row and the row exists
-    row_exists =  not csv.query("@locker_id == id").query("@locker_keycode == keycode").empty 
+    matched_lockers = csv.query("@locker_id == id").query("@locker_keycode == keycode") 
 
-    # TODO: remove me and fix me
-    kaas =  csv.query("@locker_id == id")
-    gieter = kaas.query("@locker_keycode == keycode")
+    # if matched lockers is empty that means that the user has entered the wrong pincode or locker id
+    if matched_lockers.empty:
+        return False
 
-    # row_exists = bool(((csv.id == locker_id ) & (csv.keycode == locker_keycode)).any())
-    # kaas = ((csv.id == locker_id ) & (csv.keycode == locker_keycode))
+    row_exists = not matched_lockers.empty 
 
     if row_exists:
         # drop axis 1/row by id
-        csv = csv[~csv["id"].isin([locker_id])]
+        csv = csv.drop(csv[csv.id == locker_id].index) 
         write_csv(csv)
 
     return row_exists
