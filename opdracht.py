@@ -195,12 +195,6 @@ def kluis_teruggeven():
 
 
 def development_code():
-    # Breid deze code uit om het keuzemenu te realiseren:
-    # inst_options = [{'selector': '1', 'prompt': 'Ik wil weten hoeveel kluizen nog vrij zijn ', 'return': 1},
-    #                 {'selector': '2', 'prompt': 'Ik wil een nieuwe kluis', 'return': 2},
-    #                 {'selector': '3', 'prompt': 'Ik wil een kluis openen', 'return': 3},
-    #                 {'selector': '4', 'prompt': 'Ik geef mijn kluis terug', 'return': 4}]
-    # inst = prompt.options("selecteer optie:", inst_options)
     prompt = """
     select something you want to do and type its number and press enter
 
